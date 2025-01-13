@@ -240,7 +240,7 @@ unsafe fn create_array_internal(
             let values = create_array_helper(reader, values_field, variadic_counts)?;
 
             let run_array_length = run_node.length() as usize;
-            let builder = ArrayData::builder(data_type.clone())
+            let array_data = ArrayData::builder(data_type.clone())
                 .len(run_array_length)
                 .offset(0)
                 .add_child_data(run_ends.into_data())
@@ -321,7 +321,7 @@ unsafe fn create_array_internal(
                 )));
             }
 
-            let builder = ArrayData::builder(data_type.clone())
+            let array_data = ArrayData::builder(data_type.clone())
                 .len(length as usize)
                 .offset(0);
 
@@ -539,7 +539,7 @@ unsafe fn create_dictionary_array_internal(
 ) -> Result<ArrayRef, ArrowError> {
     if let Dictionary(_, _) = *data_type {
         let null_buffer = (field_node.null_count() > 0).then_some(buffers[0].clone());
-        let builder = ArrayData::builder(data_type.clone())
+        let array_data = ArrayData::builder(data_type.clone())
             .len(field_node.length() as usize)
             .add_buffer(buffers[1].clone())
             .add_child_data(value_array.into_data())
